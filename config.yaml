@@ -1,0 +1,11 @@
+server:
+  generic:
+    host: localhost
+    port: 8080
+  instance:
+    name: "Quasar"
+    caseSensitive: true
+    strictRouting: true
+  listen:
+    enablePrefork: true
+    enablePrintRoutes: true
