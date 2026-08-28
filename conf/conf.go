@@ -7,7 +7,8 @@ import (
 )
 
 type Config struct {
-	Server ServerConfig `mapstructure:"server"`
+	Server   ServerConfig `mapstructure:"server"`
+	Database Database     `mapstructure:"database"`
 }
 
 var C Config

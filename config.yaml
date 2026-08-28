@@ -9,3 +9,10 @@ server:
   listen:
     enablePrefork: true
     enablePrintRoutes: true
+
+database:
+  host: database
+  port: 5432
+  name: quasar
+  username: quasar
+  password: quasar-dev
