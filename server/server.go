@@ -1,13 +1,24 @@
 package server
 
 import (
+	"log"
 	"quasar/conf"
+	"quasar/util/validation"
 	"strconv"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 )
 
 var Config = &conf.C
+
+type structValidator struct {
+	validate *validator.Validate
+}
+
+func (validator *structValidator) Validate(out any) error {
+	return validator.validate.Struct(out)
+}
 
 type Server struct {
 	Host      string
@@ -28,10 +39,17 @@ func NewCustom(host string, port int, appConfig fiber.Config) *Server {
 func New() *Server {
 	host := Config.Server.Generic.Host
 	port := Config.Server.Generic.Port
+
+	v := validator.New(validator.WithRequiredStructEnabled())
+	if err := v.RegisterValidation("password_strength", validation.PasswordStrength); err != nil {
+		log.Panicf("Unable to register password strength validation: %v", err)
+	}
+
 	appConfig := fiber.Config{
-		AppName:       Config.Server.Instance.Name,
-		CaseSensitive: Config.Server.Instance.CaseSensitive,
-		StrictRouting: Config.Server.Instance.StrictRouting,
+		AppName:         Config.Server.Instance.Name,
+		CaseSensitive:   Config.Server.Instance.CaseSensitive,
+		StrictRouting:   Config.Server.Instance.StrictRouting,
+		StructValidator: &structValidator{validate: v},
 	}
 
 	return NewCustom(host, port, appConfig)
